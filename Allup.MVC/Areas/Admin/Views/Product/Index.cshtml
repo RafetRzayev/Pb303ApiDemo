@@ -42,6 +42,7 @@
                                         <a asp-controller="product" asp-action="details" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
                                         <a asp-controller="product" asp-action="update" asp-route-id="@item.Id" class="btn btn-warning">Update</a>
                                         <a asp-controller="product" asp-action="delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                                        <a asp-controller="productimages" asp-action="details" asp-route-productId="@item.Id" class="btn btn-danger">Images</a>
                                     </td>
                                 </tr>
                             }

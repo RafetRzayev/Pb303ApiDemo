@@ -15,8 +15,13 @@ public class AutoMapping : Profile
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProductTranslations!.FirstOrDefault() == null ? "" : src.ProductTranslations!.FirstOrDefault()!.Name))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.ProductTranslations!.FirstOrDefault() == null ? "" : src.ProductTranslations!.FirstOrDefault()!.Description))
             .ReverseMap();
+        CreateMap<Product, ProductCreateViewModel>().ReverseMap();
         CreateMap<CategoryTranslationViewModel, CategoryTranslation>().ReverseMap();
+        CreateMap<ProductTranslationViewModel, ProductTranslation>().ReverseMap();
+        CreateMap<ProductTranslationCreateViewModel, ProductTranslation>().ReverseMap();
         CreateMap<Wishlist, WishlistViewModel>().ReverseMap();
         CreateMap<Wishlist, WishlistCreateViewModel>().ReverseMap();
+        CreateMap<ProductImage, ProductImageCreateViewModel>().ReverseMap();
+        CreateMap<ProductImage, ProductImageViewModel>().ReverseMap();
     }
 }

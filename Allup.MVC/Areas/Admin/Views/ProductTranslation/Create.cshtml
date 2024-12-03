@@ -1,0 +1,29 @@
+﻿@model ProductTranslationCreateViewModel
+<div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Default form</h4>
+            <p class="card-description">
+                Basic form layout
+            </p>
+            <img src="@Model.Product?.CoverImageUrl" width="100" height="100"/>
+            <span>@Model.Message</span>
+            <form method="post" class="forms-sample" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Language</label>
+                    <select asp-for="LanguageId" asp-items="Model?.Languages" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input asp-for="Name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input asp-for="Description" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                <a asp-controller="product" asp-action="index" class="btn btn-light">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

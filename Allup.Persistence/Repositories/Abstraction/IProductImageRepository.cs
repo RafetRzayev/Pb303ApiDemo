@@ -3,6 +3,6 @@ using Core.Persistence.Repositories;
 
 namespace Allup.Persistence.Repositories.Abstraction;
 
-public interface ICategoryTranslationRepository : IRepositoryAsync<CategoryTranslation>
+public interface IProductImageRepository : IRepositoryAsync<ProductImage>
 {
 }

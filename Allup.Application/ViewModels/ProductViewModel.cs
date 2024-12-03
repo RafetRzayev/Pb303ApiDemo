@@ -31,17 +31,7 @@ public class ProductCreateViewModel
     public decimal Price { get; set; }
     public int Count { get; set; }
     public string? Code { get; set; }
-    public List<ProductTranslationViewModel>? ProductTranslations { get; set; }
     public int CategoryId {  get; set; }
     public List<SelectListItem>? CategoryList {  get; set; }
     public List<IFormFile>? Images { get; set; }
-}
-
-public class ProductTranslationViewModel
-{
-    public string? Name {  get; set; }
-    public string? Description { get; set; }
-    public int ProductId { get; set; }
-    public int LanguageId { get; set; }
-    public LanguageViewModel? LanguageViewModel {  get; set; }
 }

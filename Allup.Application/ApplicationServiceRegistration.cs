@@ -36,12 +36,15 @@ public static class ApplicationServiceRegistration
         services.AddScoped<ICurrencyService, CurrencyManager>();
         services.AddScoped<ICategoryService, CategoryManager>();
         services.AddScoped<IProductService, ProductManager>();
+        services.AddScoped<IProductTranslationService, ProductTranslationManager>();
         services.AddScoped<IHomeService, HomeManager>();
         services.AddScoped(typeof(ICrudService<,,>), typeof(CrudManager<,,>));
         services.AddScoped<ICompareService, CompareManager>();
         services.AddScoped<ICookieService, CookieManager>();
         services.AddScoped<IWishlistService, WishlistManager>();
         services.AddScoped<IWishlistUiService, WishlistUiManager>();
+        services.AddScoped<ICloudinaryService, CloudinaryManager>();
+        services.AddScoped<IProductImageService, ProductImageManager>();
 
         services.AddSingleton<StringLocalizerService>();
 

@@ -1,0 +1,24 @@
+﻿@model List<ProductImageViewModel>
+
+
+@foreach (var item in Model ?? [])
+{
+    <img src="@item.ImageUrl" width="100" height="100"/>
+    <a asp-controller="productimages" asp-action="delete" asp-route-id="@item.Id">X</a>
+    <br />
+}
+
+<div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="forms-sample" enctype="multipart/form-data" asp-action="addimage" asp-route-productId="@ViewBag.ProductId">
+                <div class="form-group">
+                    <label>Image</label>
+                    <input name="newImage" type="file" class="form-control">
+                </div>   
+                <button type="submit" class="btn btn-primary mr-2">Add image</button>
+                <a asp-controller="product" asp-action="index" class="btn btn-light">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

@@ -48,9 +48,18 @@ namespace Allup.MVC.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ProductCreateViewModel createViewModel)
+        public async Task<IActionResult> Create(ProductCreateViewModel createViewModel)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                createViewModel = await _productService.GetProductCreateViewModelAsync();
+
+                return View(createViewModel);
+            }
+
+            var createdProduct = await _productService.CreateAsync(createViewModel);
+
+            return RedirectToAction("Create", "ProductTranslation", new { productId = createdProduct.Id });
         }
     }
 }

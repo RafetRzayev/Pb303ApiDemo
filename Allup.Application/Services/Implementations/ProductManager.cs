@@ -23,16 +23,16 @@ public class ProductManager :  CrudManager<ProductViewModel, Product, ProductCre
     private readonly EfRepositoryBase<Product, AppDbContext> _repository;
     private readonly ICategoryService _categoryService;
     private readonly ExternalApiService _externalApiService;
-    private readonly ICurrencyService _currencyService;
     private readonly ICookieService _cookieService;
+    private readonly ICloudinaryService _cloudinaryService;
 
-    public ProductManager(EfRepositoryBase<Product, AppDbContext> repository, IMapper mapper, ExternalApiService externalApiService, ICurrencyService currencyService, ICookieService cookieService, ICategoryService categoryService) : base(repository, mapper)
+    public ProductManager(EfRepositoryBase<Product, AppDbContext> repository, IMapper mapper, ExternalApiService externalApiService, ICookieService cookieService, ICategoryService categoryService, ICloudinaryService cloudinaryService) : base(repository, mapper)
     {
         _repository = repository;
         _externalApiService = externalApiService;
-        _currencyService = currencyService;
         _cookieService = cookieService;
         _categoryService = categoryService;
+        _cloudinaryService = cloudinaryService;
     }
 
     public override async Task<List<ProductViewModel>> GetAllAsync(Expression<Func<Product, bool>>? predicate = null,
@@ -88,11 +88,28 @@ public class ProductManager :  CrudManager<ProductViewModel, Product, ProductCre
         return productCreateViewModel;
     }
 
-    //public async Task<ProductViewModel> GetAsync(int id)
-    //{
-    //    var product = await _repository.GetAsync(id);
-    //    var productViewModel = _mapper.Map<ProductViewModel>(product);
+    public override async Task<ProductViewModel> CreateAsync(ProductCreateViewModel createViewModel)
+    {
+        createViewModel.CoverImageUrl = await _cloudinaryService.ImageCreateAsync(createViewModel.CoverImageFile);
+        createViewModel.HoverImageUrl = await _cloudinaryService.ImageCreateAsync(createViewModel.HoverImageFile);
 
-    //    return productViewModel;
-    //}
+        var createdProductEntity = Mapper.Map<Product>(createViewModel);
+        createdProductEntity.ProductImages = new List<ProductImage>();
+
+        foreach (var item in createViewModel.Images ?? [])
+        {
+            var imageUrl = await _cloudinaryService.ImageCreateAsync(item);
+
+            createdProductEntity.ProductImages.Add(
+                new ProductImage
+                { 
+                    ImageUrl = imageUrl,
+                    ProductId = createdProductEntity.Id 
+                });
+        }
+
+        createdProductEntity = await _repository.AddAsync(createdProductEntity);
+
+        return Mapper.Map<ProductViewModel>(createdProductEntity);
+    }
 }
