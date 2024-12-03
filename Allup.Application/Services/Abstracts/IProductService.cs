@@ -5,5 +5,5 @@ namespace Allup.Application.Services.Abstracts;
 
 public interface IProductService : ICrudService<ProductViewModel, Product, ProductCreateViewModel>
 {
-
+    Task<ProductCreateViewModel> GetProductCreateViewModelAsync();
 }

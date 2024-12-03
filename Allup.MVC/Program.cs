@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Allup.Application;
 using Microsoft.Extensions.Options;
 using Allup.Application.UI.Services.Implementations;
+using Allup.Domain.AppSettingsModels;
 
 namespace Allup.MVC
 {
@@ -61,6 +62,11 @@ namespace Allup.MVC
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.MapControllerRoute(
+              name: "areas",
+              pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+            );
 
             app.MapControllerRoute(
                 name: "default",

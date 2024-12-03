@@ -8,26 +8,31 @@ using Allup.Persistence.Repositories.Abstraction;
 using AutoMapper;
 using Core.Persistence.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Globalization;
 using System.Linq.Expressions;
+using System.Net.Http.Headers;
+using System.Xml.Linq;
 
 namespace Allup.Application.Services.Implementations;
 
 public class ProductManager :  CrudManager<ProductViewModel, Product, ProductCreateViewModel>, IProductService
 {
     private readonly EfRepositoryBase<Product, AppDbContext> _repository;
+    private readonly ICategoryService _categoryService;
     private readonly ExternalApiService _externalApiService;
     private readonly ICurrencyService _currencyService;
     private readonly ICookieService _cookieService;
 
-    public ProductManager(EfRepositoryBase<Product, AppDbContext> repository, IMapper mapper, ExternalApiService externalApiService, ICurrencyService currencyService, ICookieService cookieService) : base(repository, mapper)
+    public ProductManager(EfRepositoryBase<Product, AppDbContext> repository, IMapper mapper, ExternalApiService externalApiService, ICurrencyService currencyService, ICookieService cookieService, ICategoryService categoryService) : base(repository, mapper)
     {
         _repository = repository;
         _externalApiService = externalApiService;
         _currencyService = currencyService;
         _cookieService = cookieService;
+        _categoryService = categoryService;
     }
 
     public override async Task<List<ProductViewModel>> GetAllAsync(Expression<Func<Product, bool>>? predicate = null,
@@ -65,6 +70,22 @@ public class ProductManager :  CrudManager<ProductViewModel, Product, ProductCre
         productViewModel.FormattedPrice = (productViewModel.Price / coefficient).ToString("C", culture);
 
         return productViewModel;
+    }
+
+    public async Task<ProductCreateViewModel> GetProductCreateViewModelAsync()
+    {
+        var productCreateViewModel = new ProductCreateViewModel();
+        var categorySelectListItems = new List<SelectListItem>();
+        var language = await _cookieService.GetLanguageAsync();
+        var categories = await _categoryService.GetAllAsync(include:
+            x => x
+            .Include(c => c.CategoryTranslations!.Where(ct => ct.LanguageId == language.Id)));
+
+        categories.ForEach(c => categorySelectListItems.Add(new SelectListItem(c.Name, c.Id.ToString())));
+
+        productCreateViewModel.CategoryList = categorySelectListItems;
+
+        return productCreateViewModel;
     }
 
     //public async Task<ProductViewModel> GetAsync(int id)

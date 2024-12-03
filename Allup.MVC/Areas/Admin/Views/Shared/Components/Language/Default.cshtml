@@ -1,0 +1,18 @@
+﻿@using Allup.MVC.Areas.Admin.Data
+@model HeaderViewModel
+
+<li class="nav-item nav-profile dropdown">
+    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown" aria-expanded="false">
+        <span class="nav-profile-name">@Model.SelectedLanguage?.Name</span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+        @foreach(var item in Model.Languages??[])
+        {
+            <a asp-area="" asp-controller="localizer" asp-action="changeculture" asp-route-culture="@item.IsoCode">
+                <i class="mdi mdi-settings text-primary"></i>
+                @item.Name
+            </a>
+        }
+
+    </div>
+</li>
