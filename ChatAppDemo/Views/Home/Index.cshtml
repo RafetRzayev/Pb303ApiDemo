@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container d-flex justify-content-center">
+    <div class="card mt-5" id="messageContainer">
+        <div class="d-flex flex-row justify-content-between p-3 adiv text-white">
+            <i class="fas fa-chevron-left"></i>
+            <span class="pb-3">Live chat</span>
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="d-flex flex-row p-3">
+            <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png" width="30" height="30">
+            <div class="chat ml-2 p-3">Hello and thankyou for visiting birdlymind. Please click the video above</div>
+        </div>
+
+        <div class="d-flex flex-row p-3">
+            <div class="bg-white mr-2 p-3"><span class="text-muted">Hello and thankyou for visiting birdlynind.</span></div>
+            <img src="https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png" width="30" height="30">
+        </div>
+    </div>
+    <div>
+        <div class="form-group px-3">
+            <input class="form-control" id="messageInput" rows="5" placeholder="Type your message" />
+        </div>
+        <div>
+            <button onclick="sendMessage()">Send message</button>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
+
+    connection.on("ReceiveMessage", (user, message) => {
+
+        if(user == "1"){
+            AddSelfMessageDiv(message);
+        }
+        else{
+            AddOtherMessageDiv(message);
+        }
+    });
+
+    connection.start().catch(err => console.error(err));
+
+    function sendMessage() {
+        const message = document.getElementById("messageInput").value;
+        connection.invoke("SendMessage","1", message).catch(err => console.error(err));
+    }
+
+
+    function AddSelfMessageDiv(message){       
+        const parentDiv = document.createElement("div");
+        parentDiv.className ="d-flex flex-row p-3";
+
+        const childDiv = document.createElement("div");
+        childDiv.className = "bg-white mr-2 p-3";
+
+        const span = document.createElement("span");
+        span.className = "text-muted";
+        span.textContent = message;
+
+        const image = document.createElement("img");
+        image.src="https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png";
+        image.width=30;
+        image.height=30;
+
+        childDiv.appendChild(span);
+        parentDiv.appendChild(childDiv);
+        parentDiv.appendChild(image);
+        document.getElementById("messageContainer").appendChild(parentDiv);
+    }
+
+    function AddOtherMessageDiv(message){
+        const parentDiv= `<div class="d-flex flex-row p-3">
+            <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png" width="30" height="30">
+            <div class="chat ml-2 p-3">${message}</div>
+        </div>`;
+
+        document.getElementById("messageContainer").innerHTML+=parentDiv;
+    }
+</script>
